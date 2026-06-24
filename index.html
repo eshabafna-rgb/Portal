@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verkada Trial Return — Demo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/tabler-icons.min.css">
+<style>
+  :root{
+    --bg-page:#F5F6F8;--bg-primary:#FFFFFF;--bg-secondary:#F0F1F4;--bg-info:#E6F1FB;--bg-warning:#FAEEDA;
+    --txt-primary:#1A1A1A;--txt-secondary:#5F5E5A;--txt-tertiary:#9098A4;--txt-info:#185FA5;--txt-warning:#854F0B;--txt-success:#0F6E56;
+    --border-t:rgba(0,0,0,0.10);--border-s:rgba(0,0,0,0.18);--border-info:#378ADD;
+    --r-md:8px;--r-lg:12px;
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--mono:'SF Mono',Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg-page:#1A1A1C;--bg-primary:#242427;--bg-secondary:#2E2E32;--bg-info:#0C447C;--bg-warning:#633806;
+    --txt-primary:#F0F0F0;--txt-secondary:#B4B2A9;--txt-tertiary:#888780;--txt-info:#85B7EB;--txt-warning:#FAC775;--txt-success:#5DCAA5;
+    --border-t:rgba(255,255,255,0.12);--border-s:rgba(255,255,255,0.22);--border-info:#378ADD;
+  }}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:var(--bg-page);color:var(--txt-primary);padding:24px 16px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:660px;margin:0 auto;}
+  .demo-head{text-align:center;margin-bottom:18px;}
+  .demo-head h1{font-size:18px;font-weight:500;}
+  .demo-head p{font-size:12px;color:var(--txt-tertiary);margin-top:3px;}
+  .stage{background:var(--bg-secondary);border-radius:var(--r-lg);padding:16px;}
+  .view{display:none;}.view.show{display:block;}
+  .mailmeta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--txt-tertiary);padding:0 4px 10px;}
+  .email{background:var(--bg-primary);border:0.5px solid var(--border-t);border-radius:var(--r-md);overflow:hidden;}
+  .ehead{padding:18px 22px 0;}
+  .elogo{display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px;margin-bottom:18px;}
+  .mk{width:20px;height:20px;border-radius:5px;background:var(--txt-primary);color:var(--bg-primary);display:flex;align-items:center;justify-content:center;font-size:12px;}
+  .ebody{padding:0 22px 20px;}.ebody h3{font-size:17px;font-weight:500;margin:0 0 14px;}
+  .ebody p{font-size:13px;line-height:1.6;margin:0 0 12px;}
+  .ordbox{font-size:12px;background:var(--bg-secondary);border-radius:var(--r-md);padding:11px 13px;margin:4px 0 14px;}
+  .ordbox .ser{font-size:11px;color:var(--txt-secondary);margin-top:5px;line-height:1.5;display:block;}
+  .cta{display:block;width:100%;text-align:center;font-size:14px;font-weight:500;padding:13px;border-radius:var(--r-md);background:var(--txt-primary);color:var(--bg-primary);border:none;cursor:pointer;}
+  .cta:hover{opacity:.9;}
+  .ctasub{text-align:center;font-size:11px;color:var(--txt-tertiary);margin:6px 0 16px;}
+  .links{display:flex;gap:18px;font-size:12px;margin:0 0 16px;}.links a{color:var(--txt-info);cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+  table.prod{width:100%;border-collapse:collapse;font-size:11px;margin:6px 0 14px;}
+  table.prod th{text-align:left;font-weight:500;color:var(--txt-secondary);padding:7px 8px;border-bottom:0.5px solid var(--border-s);background:var(--bg-secondary);}
+  table.prod td{padding:7px 8px;border-bottom:0.5px solid var(--border-t);}table.prod td.q{text-align:center;font-weight:500;}
+  .efoot{font-size:11px;color:var(--txt-tertiary);line-height:1.5;border-top:0.5px solid var(--border-t);padding:14px 22px;}
+  .frame{background:var(--bg-primary);border:0.5px solid var(--border-s);border-radius:var(--r-lg);overflow:hidden;}
+  .topbar{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:0.5px solid var(--border-t);background:var(--bg-secondary);}
+  .topbar .logo{display:flex;align-items:center;gap:7px;font-weight:500;font-size:13px;}.topbar .logo .mk{width:18px;height:18px;font-size:11px;}
+  .topbar .acct{margin-left:auto;font-size:11px;color:var(--txt-secondary);}
+  .topbar .help{font-size:11px;color:var(--txt-info);cursor:pointer;display:flex;align-items:center;gap:4px;margin-left:10px;}
+  .progress{display:flex;gap:4px;padding:10px 14px;border-bottom:0.5px solid var(--border-t);flex-wrap:wrap;}
+  .pchip{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt-tertiary);padding:3px 8px;border-radius:20px;cursor:pointer;}
+  .pchip .pn{width:16px;height:16px;border-radius:50%;border:0.5px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-size:9px;}
+  .pchip.done{color:var(--txt-success);}.pchip.done .pn{background:#1D9E75;border-color:#1D9E75;color:#fff;}
+  .pchip.active{color:var(--txt-primary);}.pchip.active .pn{background:var(--txt-primary);border-color:var(--txt-primary);color:var(--bg-primary);}
+  .pbody{padding:18px;min-height:340px;}
+  .panel{display:none;}.panel.show{display:block;}
+  h3.sh{font-size:16px;font-weight:500;margin:0 0 3px;}
+  .lead{font-size:13px;color:var(--txt-secondary);margin:0 0 16px;}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;}
+  button.b{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:8px 14px;border-radius:var(--r-md);border:0.5px solid var(--border-s);background:var(--bg-primary);color:var(--txt-primary);cursor:pointer;}
+  button.b:hover{background:var(--bg-secondary);}button.b.pri{background:var(--txt-primary);color:var(--bg-primary);border-color:var(--txt-primary);}
+  .split{display:flex;gap:10px;margin-bottom:16px;}
+  .scard{flex:1;border-radius:var(--r-md);padding:12px 14px;border:0.5px solid var(--border-t);}
+  .scard.keep{background:#E1F5EE;border-color:#9FE1CB;}.scard.send{background:#EEEDFE;border-color:#C5C0EC;}
+  @media(prefers-color-scheme:dark){.scard.keep{background:#0F6E56;border-color:#1B8C6F;}.scard.send{background:#3C3489;border-color:#534AB7;}}
+  .scard .lbl{font-size:11px;font-weight:500;display:flex;align-items:center;gap:5px;}
+  .scard.keep .lbl{color:#0F6E56;}.scard.send .lbl{color:#534AB7;}
+  @media(prefers-color-scheme:dark){.scard.keep .lbl{color:#9FE1CB;}.scard.send .lbl{color:#CECBF6;}}
+  .scard .big{font-size:22px;font-weight:600;margin-top:3px;}.scard .cap{font-size:11px;color:var(--txt-secondary);margin-top:1px;}
+  .sku{border:0.5px solid var(--border-t);border-radius:var(--r-md);margin-bottom:10px;overflow:hidden;}
+  .skuhd{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--bg-secondary);cursor:pointer;}
+  .ptile{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+  .ptile i{font-size:20px;}.ptile .mb{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:600;padding:0 3px;border-radius:5px;color:#fff;}
+  .skuname{font-size:13px;font-weight:500;}.skusum{font-size:11px;color:var(--txt-secondary);margin-top:1px;}
+  .chev{margin-left:auto;color:var(--txt-tertiary);font-size:16px;transition:transform .15s;}.sku.open .chev{transform:rotate(180deg);}
+  .setall{display:flex;gap:6px;align-items:center;padding:8px 12px;border-top:0.5px solid var(--border-t);flex-wrap:wrap;}
+  .setall span{font-size:11px;color:var(--txt-tertiary);margin-right:2px;}
+  .mini{font-size:11px;padding:4px 11px;border-radius:14px;border:0.5px solid var(--border-s);background:var(--bg-primary);cursor:pointer;color:var(--txt-secondary);display:inline-flex;align-items:center;gap:4px;}
+  .mini:hover{background:var(--bg-secondary);}
+  .units{display:none;}.sku.open .units{display:block;}
+  .unit{display:flex;align-items:center;gap:10px;padding:9px 12px;border-top:0.5px solid var(--border-t);}
+  .uno{font-size:10px;color:var(--txt-tertiary);width:16px;flex-shrink:0;text-align:center;}
+  .user{font-family:var(--mono);font-size:11px;flex:1;}
+  .toggle{display:inline-flex;border:0.5px solid var(--border-s);border-radius:20px;overflow:hidden;}
+  .toggle button{font-size:11px;padding:5px 12px;border:none;background:var(--bg-primary);cursor:pointer;color:var(--txt-tertiary);display:flex;align-items:center;gap:4px;}
+  .toggle button.keep.on{background:#E1F5EE;color:#0F6E56;font-weight:500;}.toggle button.send.on{background:#EEEDFE;color:#534AB7;font-weight:500;}
+  @media(prefers-color-scheme:dark){.toggle button.keep.on{background:#0F6E56;color:#9FE1CB;}.toggle button.send.on{background:#3C3489;color:#CECBF6;}}
+  .subrow{display:none;padding:0 12px 9px 38px;}.subrow.show{display:flex;align-items:center;gap:8px;}
+  .subrow .q{font-size:11px;color:var(--txt-secondary);}
+  .subrow select{font-size:11px;padding:4px 8px;border-radius:6px;border:0.5px solid var(--border-s);background:var(--bg-primary);color:var(--txt-primary);}
+  .inv{border:0.5px solid var(--border-t);border-radius:var(--r-md);overflow:hidden;}
+  .invhd{padding:12px 14px;background:var(--bg-secondary);font-size:13px;font-weight:500;display:flex;align-items:center;gap:7px;}
+  table.it{width:100%;border-collapse:collapse;font-size:12px;}
+  table.it th{text-align:left;font-weight:500;color:var(--txt-tertiary);font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:8px 14px;border-bottom:0.5px solid var(--border-t);}
+  table.it td{padding:9px 14px;border-bottom:0.5px solid var(--border-t);}table.it td.r{text-align:right;font-variant-numeric:tabular-nums;}
+  table.it tr.tot td{font-weight:600;border-bottom:none;padding-top:11px;}
+  .pricing-badge{font-size:10px;padding:1px 7px;border-radius:10px;background:#E1F5EE;color:#0F6E56;margin-left:6px;}
+  @media(prefers-color-scheme:dark){.pricing-badge{background:#0F6E56;color:#9FE1CB;}}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .rchip{font-size:12px;padding:8px 13px;border-radius:20px;border:0.5px solid var(--border-s);background:var(--bg-primary);cursor:pointer;color:var(--txt-secondary);}
+  .rchip.sel{background:var(--bg-info);color:var(--txt-info);border-color:var(--border-info);font-weight:500;}
+  textarea.cmt{width:100%;font-size:12px;padding:9px;border-radius:var(--r-md);border:0.5px solid var(--border-s);background:var(--bg-primary);color:var(--txt-primary);font-family:inherit;resize:vertical;min-height:54px;margin-top:12px;}
+  .opt{border:0.5px solid var(--border-t);border-radius:var(--r-md);padding:12px;cursor:pointer;}.opt.sel{border:2px solid var(--border-info);}
+  .opt .ot{font-size:13px;font-weight:500;margin-bottom:2px;}.opt .os{font-size:11px;color:var(--txt-secondary);margin:0;}
+  .field{display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:10px 0;border-bottom:0.5px solid var(--border-t);}
+  .field .ok{color:var(--txt-success);display:inline-flex;align-items:center;gap:4px;}
+  .note{display:flex;gap:8px;align-items:flex-start;margin-top:14px;padding:9px 11px;border-radius:var(--r-md);background:var(--bg-info);}
+  .note i{font-size:14px;color:var(--txt-info);margin-top:1px;}.note p{font-size:11px;color:var(--txt-info);margin:0;line-height:1.5;}
+  .qr{width:64px;height:64px;border-radius:8px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;color:var(--txt-tertiary);}
+  .pftr{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-top:0.5px solid var(--border-t);background:var(--bg-secondary);}
+  .splitnote{font-size:11px;color:var(--txt-secondary);}
+  .toast{font-size:11px;color:var(--txt-success);display:inline-flex;align-items:center;gap:5px;}
+  .track{position:relative;padding-left:20px;margin-top:4px;}
+  .track::before{content:'';position:absolute;left:5px;top:5px;bottom:14px;width:1.5px;background:var(--border-s);}
+  .tk{position:relative;padding:0 0 14px;}
+  .tk .td{position:absolute;left:-20px;top:2px;width:11px;height:11px;border-radius:50%;background:var(--bg-primary);border:2px solid var(--border-s);}
+  .tk.done .td{background:#1D9E75;border-color:#1D9E75;}.tk.now .td{background:#378ADD;border-color:#378ADD;}
+  .tk .tt{font-size:12px;font-weight:500;}.tk.pending .tt{color:var(--txt-tertiary);}.tk .ts{font-size:11px;color:var(--txt-tertiary);}
+  .fbcard{border:0.5px solid var(--border-t);border-radius:var(--r-md);padding:13px;margin-top:8px;}
+  .stars{display:flex;gap:4px;margin:6px 0 0;}.stars i{font-size:22px;color:var(--border-s);cursor:pointer;}.stars i.on{color:#EF9F27;}
+  .cbcard{background:var(--bg-secondary);border-radius:var(--r-md);padding:13px;margin-top:14px;}
+  .repline{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .repav{width:38px;height:38px;border-radius:50%;background:var(--bg-info);color:var(--txt-info);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13px;}
+  .slot{font-size:12px;padding:7px 12px;border-radius:var(--r-md);border:0.5px solid var(--border-s);background:var(--bg-primary);cursor:pointer;}
+  .slot.sel{background:var(--bg-info);color:var(--txt-info);border-color:var(--border-info);font-weight:500;}
+  .drawer{margin-top:14px;border:0.5px solid var(--border-t);border-radius:var(--r-md);overflow:hidden;display:none;}.drawer.show{display:block;}
+  .drawerhd{display:flex;align-items:center;gap:7px;padding:10px 13px;background:var(--bg-secondary);font-size:12px;font-weight:500;}
+  .drawerbd{padding:13px;}
+  .frow{margin-bottom:10px;}.frow label{font-size:11px;color:var(--txt-secondary);display:block;margin-bottom:4px;}
+  .frow select,.frow textarea{width:100%;font-size:12px;padding:8px;border-radius:var(--r-md);border:0.5px solid var(--border-s);background:var(--bg-primary);color:var(--txt-primary);font-family:inherit;}
+  .frow textarea{resize:vertical;min-height:56px;}
+  .tkconfirm{display:none;text-align:center;padding:6px 0;}.tkconfirm.show{display:block;}
+  .tkid{font-family:var(--mono);font-size:12px;background:var(--bg-secondary);padding:2px 8px;border-radius:6px;}
+  .tag{text-align:center;font-size:10px;color:var(--txt-tertiary);margin-top:8px;}.tag a{color:var(--txt-info);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="demo-head"><h1>Verkada Trial Return — Customer Experience Demo</h1><p>Prototype with mock data. Click "Resolve my trial" to begin.</p></div>
+
+  <!-- EMAIL -->
+  <div class="view show" id="emailView">
+    <div class="stage">
+      <div class="mailmeta"><i class="ti ti-mail"></i><span style="color:var(--txt-secondary)">returns@verkada.com</span><span>· to you</span></div>
+      <div class="email">
+        <div class="ehead"><div class="elogo"><span class="mk">V</span> Verkada</div><h3>Your Verkada trial has expired</h3></div>
+        <div class="ebody">
+          <p>Hi Maya,</p>
+          <p>We hope you've enjoyed your trial experience with Verkada. Your free trial expired on <strong>June 14, 2026</strong>.</p>
+          <div class="ordbox">Order #: <strong>V2S-4821-03</strong><span class="ser">Consolidated order series — covers all units on order numbers ending -01 through -03. Keep some, return some, or buy some.</span></div>
+          <button class="cta" onclick="openPortal()">Resolve my trial — purchase, extend, or return</button>
+          <p class="ctasub">One link to make your decision. Takes about a minute.</p>
+          <div class="links"><a onclick="openPortal()"><i class="ti ti-shopping-cart"></i> Purchase products</a><a onclick="openPortal()"><i class="ti ti-arrow-back-up"></i> Return products</a></div>
+          <p style="font-size:12px;font-weight:500;margin-bottom:4px;">Outstanding products</p>
+          <table class="prod"><thead><tr><th>Model</th><th>Description</th><th class="q">Units</th><th>Order #</th></tr></thead><tbody>
+            <tr><td>CD52</td><td>Dome Camera</td><td class="q">10</td><td>-01, -02</td></tr>
+            <tr><td>AC41</td><td>Access Controller</td><td class="q">2</td><td>-02</td></tr>
+            <tr><td>D40</td><td>Door Reader</td><td class="q">1</td><td>-03</td></tr>
+            <tr><td>SV25</td><td>Environmental Sensor</td><td class="q">1</td><td>-03</td></tr>
+          </tbody></table>
+          <p style="font-size:12px;">Questions? Contact your account rep, <a style="color:var(--txt-info)" href="#" onclick="return false">Jordan Lee</a>.</p>
+        </div>
+        <div class="efoot">If the return link doesn't work, contact returns@verkada.com. If you've already shipped the unit(s) back, please disregard this email.</div>
+      </div>
+      <p class="tag">Demo · click "Resolve my trial" to open the portal</p>
+    </div>
+  </div>
+
+  <!-- PORTAL -->
+  <div class="view" id="portalView">
+    <div class="frame">
+      <div class="topbar"><span class="logo"><span class="mk">V</span> Verkada Returns</span><span class="acct">Acme Corp · Order V2S-4821 · 14 units</span><span class="help" onclick="openTicket()"><i class="ti ti-lifebuoy"></i> Get help</span></div>
+      <div class="progress">
+        <span class="pchip active" data-s="0"><span class="pn">1</span> Home</span>
+        <span class="pchip" data-s="1"><span class="pn">2</span> Decide</span>
+        <span class="pchip" data-s="2"><span class="pn">3</span> Review &amp; pay</span>
+        <span class="pchip" data-s="3"><span class="pn">4</span> Reason</span>
+        <span class="pchip" data-s="4"><span class="pn">5</span> Method</span>
+        <span class="pchip" data-s="5"><span class="pn">6</span> Customs</span>
+        <span class="pchip" data-s="6"><span class="pn">7</span> Label</span>
+        <span class="pchip" data-s="7"><span class="pn">8</span> Track</span>
+      </div>
+      <div class="pbody">
+        <!-- 0 HOME -->
+        <div class="panel show" data-p="0">
+          <div class="row" style="margin-bottom:14px;"><div><h3 class="sh">Make your decision</h3><p class="lead" style="margin:0;">Order V2S-4821 · 14 devices · expired Jun 14</p></div></div>
+          <div class="actions">
+            <button class="b" onclick="showExtend()"><i class="ti ti-refresh"></i> Extend trial</button>
+            <button class="b pri" onclick="go(1)"><i class="ti ti-adjustments-check"></i> Decide per unit</button>
+          </div>
+          <p class="splitnote" style="margin-top:10px;">You'll keep or send back each unit, then we handle payment and the label.</p>
+          <div id="extendBox" style="display:none;">
+            <div class="cbcard">
+              <div class="repline"><div class="repav">JL</div><div><div style="font-size:13px;font-weight:500;">Jordan Lee will call to discuss options</div><div style="font-size:11px;color:var(--txt-secondary)">Your account rep · extensions, pricing, volume options</div></div></div>
+              <p style="font-size:12px;color:var(--txt-secondary);margin:0 0 8px;">Pick a time that works:</p>
+              <div class="chips" id="slots"><span class="slot" onclick="pickSlot(this)">Today, 3:00 PM</span><span class="slot" onclick="pickSlot(this)">Tomorrow, 10:00 AM</span><span class="slot" onclick="pickSlot(this)">Tomorrow, 2:00 PM</span><span class="slot" onclick="pickSlot(this)">Thu, 11:00 AM</span></div>
+              <div id="cbConfirm" style="display:none;margin-top:12px;" class="toast"><i class="ti ti-check"></i> Callback booked — Jordan will call you then. Reminders paused meanwhile.</div>
+              <div style="margin-top:12px;"><button class="b pri" onclick="confirmCallback()">Confirm callback</button></div>
+            </div>
+          </div>
+        </div>
+        <!-- 1 DECIDE -->
+        <div class="panel" data-p="1">
+          <h3 class="sh">For each unit — keep it, or send it back?</h3>
+          <p class="lead">Just two choices per unit. We'll sort out payment and the return label after.</p>
+          <div class="split">
+            <div class="scard keep"><div class="lbl"><i class="ti ti-circle-check"></i> Keeping</div><div class="big" id="keepN">0</div><div class="cap">you'll purchase these</div></div>
+            <div class="scard send"><div class="lbl"><i class="ti ti-arrow-back-up"></i> Sending back</div><div class="big" id="sendN">0</div><div class="cap">we'll generate a label</div></div>
+          </div>
+          <div id="skus"></div>
+          <div class="note"><i class="ti ti-info-circle"></i><p>If a unit you're sending back is lost or damaged, note it under "Send back" — it skips the label and your rep handles it. No invoices to think about here.</p></div>
+        </div>
+        <!-- 2 REVIEW & PAY -->
+        <div class="panel" data-p="2">
+          <h3 class="sh">Units you're keeping</h3>
+          <p class="lead">Invoice for the units you chose to keep, at your trial pricing.</p>
+          <div class="inv"><div class="invhd"><i class="ti ti-file-invoice"></i> Invoice — Order V2S-4821 <span class="pricing-badge">trial pricing applied</span></div>
+            <table class="it"><thead><tr><th>Item</th><th>Qty</th><th style="text-align:right">Unit</th><th style="text-align:right">Amount</th></tr></thead><tbody id="invBody"></tbody></table>
+          </div>
+          <div class="note"><i class="ti ti-info-circle"></i><p>Only kept units appear here. Units you're sending back aren't billed. Lost or damaged units are handled separately by your rep.</p></div>
+        </div>
+        <!-- 3 REASON -->
+        <div class="panel" data-p="3">
+          <h3 class="sh">What's the main reason for sending these back?</h3>
+          <p class="lead">One tap. Helps us improve — and helps your rep follow up well.</p>
+          <div class="chips" id="reasonChips">
+            <span class="rchip" onclick="pickReason(this)">Budget / pricing</span>
+            <span class="rchip" onclick="pickReason(this)">Not the right fit</span>
+            <span class="rchip" onclick="pickReason(this)">Timing isn't right</span>
+            <span class="rchip" onclick="pickReason(this)">Chose another vendor</span>
+            <span class="rchip" onclick="pickReason(this)">Technical issues</span>
+            <span class="rchip" onclick="pickReason(this)">Other</span>
+          </div>
+          <textarea class="cmt" placeholder="Anything you'd like us to know? (optional)"></textarea>
+        </div>
+        <!-- 4 METHOD -->
+        <div class="panel" data-p="4">
+          <h3 class="sh">How would you like to return them?</h3>
+          <p class="lead">Both are prepaid. Pick whatever is easier.</p>
+          <div style="display:flex;gap:10px;"><div class="opt sel" id="optDrop" onclick="pickMethod('drop')"><div class="ot"><i class="ti ti-package"></i> Drop off myself</div><p class="os">QR code, no printer. Nearest point on the next step.</p></div><div class="opt" id="optPick" onclick="pickMethod('pick')"><div class="ot"><i class="ti ti-truck-delivery"></i> Schedule a pickup</div><p class="os">Carrier collects from your address.</p></div></div>
+        </div>
+        <!-- 5 CUSTOMS -->
+        <div class="panel" data-p="5">
+          <h3 class="sh">Customs documents</h3>
+          <p class="lead">Pre-filled, scoped to the units you're returning. Add one photo.</p>
+          <div class="field"><span><i class="ti ti-file-invoice" style="font-size:15px;vertical-align:-2px;margin-right:7px"></i>Commercial invoice <span style="color:var(--txt-tertiary)" id="invCount"></span></span><span class="ok"><i class="ti ti-check"></i> auto-filled</span></div>
+          <div class="field"><span><i class="ti ti-battery-2" style="font-size:15px;vertical-align:-2px;margin-right:7px"></i>Battery declaration</span><span class="ok"><i class="ti ti-check"></i> auto-filled</span></div>
+          <div class="field" style="border-bottom:none;"><span><i class="ti ti-camera" style="font-size:15px;vertical-align:-2px;margin-right:7px"></i>Packaging photo</span><span id="photoState"><button class="b" style="padding:5px 11px" onclick="uploadPhoto()"><i class="ti ti-upload"></i> Upload</button></span></div>
+          <div class="note"><i class="ti ti-shield-check"></i><p>The invoice lists only returning serials — kept or written-off units are excluded, so the box contents match the paperwork.</p></div>
+        </div>
+        <!-- 6 LABEL -->
+        <div class="panel" data-p="6">
+          <h3 class="sh">Your return label is ready</h3>
+          <p class="lead">For the returning units only. Drop off within 14 days.</p>
+          <div class="row" style="align-items:flex-start;"><div style="display:flex;gap:13px;align-items:center;"><div class="qr"><i class="ti ti-qrcode" style="font-size:32px"></i></div><div><div style="font-size:13px;font-weight:500;">UPS — show QR at drop-off</div><div style="font-size:11px;color:var(--txt-secondary)" id="labelCount"></div></div></div><div class="actions"><button class="b"><i class="ti ti-map-pin"></i> Find drop-off</button><button class="b"><i class="ti ti-download"></i> PDF</button></div></div>
+          <div class="note"><i class="ti ti-mail"></i><p>The "you're all set" email fires within minutes of the first carrier scan — no need to check back here.</p></div>
+        </div>
+        <!-- 7 TRACK -->
+        <div class="panel" data-p="7">
+          <h3 class="sh">Return status</h3>
+          <p class="lead" id="trackLead">Acme Corp · Order V2S-4821</p>
+          <div class="track" id="trackList"></div>
+          <div class="fbcard"><div style="font-size:12px;font-weight:500;">How easy was setting up this return?</div>
+            <div class="stars" id="stars"><i class="ti ti-star" data-v="1"></i><i class="ti ti-star" data-v="2"></i><i class="ti ti-star" data-v="3"></i><i class="ti ti-star" data-v="4"></i><i class="ti ti-star" data-v="5"></i></div>
+            <div id="fbThanks" style="display:none;margin-top:8px;" class="toast"><i class="ti ti-check"></i> Thanks — that helps us improve.</div>
+          </div>
+          <div class="note"><i class="ti ti-info-circle"></i><p>A short trial-experience survey (NPS) follows once the return completes — kept separate so process and product feedback don't blur.</p></div>
+        </div>
+
+        <!-- TICKET DRAWER -->
+        <div class="drawer" id="ticket">
+          <div class="drawerhd"><i class="ti ti-lifebuoy"></i> Raise a support ticket</div>
+          <div class="drawerbd">
+            <div id="tkform">
+              <div class="frow"><label>What's this about?</label>
+                <select id="tkType"><option>A unit is faulty / won't power off for return</option><option>I can't find / access a device to return it</option><option>Wrong items were shipped to me</option><option>Return label or QR code won't work</option><option>Billing or pricing question on units I'm keeping</option><option>Customs / international shipping problem</option><option>Something else</option></select>
+              </div>
+              <div class="frow"><label>Related serial (optional)</label><select id="tkSerial"><option>Not specific to one unit</option></select></div>
+              <div class="frow"><label>Tell us more</label><textarea placeholder="Describe the issue…"></textarea></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;"><span class="splitnote">Goes to the returns ops queue · first response within 4 hours</span><button class="b pri" onclick="submitTicket()">Submit ticket</button></div>
+            </div>
+            <div class="tkconfirm" id="tkConfirm"><p class="toast"><i class="ti ti-check"></i> Ticket created — <span class="tkid">RET-2287</span></p><p style="font-size:11px;color:var(--txt-secondary);margin-top:6px;">Tracked against this order. We'll reply by email and in the portal. Reminders are paused on the affected unit while it's open.</p><button class="b" style="margin-top:10px;" onclick="closeTicket()">Close</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="pftr"><button class="b" id="backBtn" onclick="go(step-1)" style="visibility:hidden;"><i class="ti ti-arrow-left"></i> Back</button><span class="splitnote" id="footsum"></span><button class="b pri" id="nextBtn" onclick="next()">Continue <i class="ti ti-arrow-right"></i></button></div>
+    </div>
+    <p class="tag"><a onclick="backToEmail()"><i class="ti ti-arrow-left"></i> back to email</a> · demo</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var tints={CD52:['#E6F1FB','#185FA5'],AC41:['#EEEDFE','#534AB7'],D40:['#E1F5EE','#0F6E56'],SV25:['#FAEEDA','#854F0B']};
+  var icons={CD52:'ti-device-cctv',AC41:'ti-door',D40:'ti-scan',SV25:'ti-device-analytics'};
+  var price={CD52:934,AC41:699,D40:149,SV25:179};
+  var skus=[
+    {m:'CD52',name:'CD52 Dome Camera',units:[]},
+    {m:'AC41',name:'AC41 Access Controller',units:[]},
+    {m:'D40',name:'D40 Door Reader',units:[]},
+    {m:'SV25',name:'SV25 Environmental Sensor',units:[]}
+  ];
+  for(var i=0;i<10;i++) skus[0].units.push({s:'VKDA-CD52-0X44'+(71+i),keep:false,cond:'Good'});
+  skus[1].units.push({s:'VKDA-AC41-0X1180',keep:false,cond:'Good'});
+  skus[1].units.push({s:'VKDA-AC41-0X1181',keep:false,cond:'Good'});
+  skus[2].units.push({s:'VKDA-D40-0X9920',keep:false,cond:'Good'});
+  skus[3].units.push({s:'VKDA-SV25-0X3304',keep:false,cond:'Good'});
+  skus[0].units[0].keep=true;skus[0].units[1].keep=true;skus[0].units[2].keep=true;skus[0].units[3].keep=true;
+  skus[0].units[9].cond='Lost';
+  var open=[true,false,false,false];window.step=0;
+
+  window.openPortal=function(){document.getElementById('emailView').classList.remove('show');document.getElementById('portalView').classList.add('show');go(0);window.scrollTo(0,0);};
+  window.backToEmail=function(){document.getElementById('portalView').classList.remove('show');document.getElementById('emailView').classList.add('show');window.scrollTo(0,0);};
+  window.showExtend=function(){var b=document.getElementById('extendBox');b.style.display=b.style.display==='none'?'block':'none';};
+  window.pickSlot=function(el){var s=document.querySelectorAll('#slots .slot');for(var i=0;i<s.length;i++)s[i].classList.remove('sel');el.classList.add('sel');};
+  window.confirmCallback=function(){document.getElementById('cbConfirm').style.display='flex';};
+
+  function tally(){var keep=0,send=0;skus.forEach(function(sk){sk.units.forEach(function(u){if(u.keep)keep++;else send++;});});return{keep:keep,send:send};}
+  function retGood(){var n=0;skus.forEach(function(sk){sk.units.forEach(function(u){if(!u.keep&&u.cond==='Good')n++;});});return n;}
+  function skuSummary(sk){var k=0,s=0;sk.units.forEach(function(u){if(u.keep)k++;else s++;});var p=[];if(k)p.push(k+' keeping');if(s)p.push(s+' sending back');return sk.units.length+' units · '+p.join(' · ');}
+  function renderDecide(){
+    var t=tally();document.getElementById('keepN').textContent=t.keep;document.getElementById('sendN').textContent=t.send;
+    document.getElementById('skus').innerHTML=skus.map(function(sk,si){
+      var tn=tints[sk.m];
+      var units=sk.units.map(function(u,ui){
+        var sub=!u.keep?'<div class="subrow show"><span class="q">Condition:</span><select onchange="setCond('+si+','+ui+',this.value)"><option '+(u.cond==='Good'?'selected':'')+'>Good — sending back</option><option '+(u.cond==='Lost'?'selected':'')+'>Lost / can\'t locate</option><option '+(u.cond==='Damaged'?'selected':'')+'>Damaged</option></select></div>':'';
+        return '<div class="unit"><span class="uno">'+(ui+1)+'</span><span class="user">'+u.s+'</span><span class="toggle"><button class="keep '+(u.keep?'on':'')+'" onclick="setKeep('+si+','+ui+',true)"><i class="ti ti-circle-check"></i> Keep</button><button class="send '+(!u.keep?'on':'')+'" onclick="setKeep('+si+','+ui+',false)"><i class="ti ti-arrow-back-up"></i> Send back</button></span></div>'+sub;
+      }).join('');
+      return '<div class="sku '+(open[si]?'open':'')+'"><div class="skuhd" onclick="toggleSku('+si+')"><span class="ptile" style="background:'+tn[0]+';color:'+tn[1]+'"><i class="ti '+icons[sk.m]+'"></i><span class="mb" style="background:'+tn[1]+'">'+sk.m+'</span></span><div><div class="skuname">'+sk.name+'</div><div class="skusum">'+skuSummary(sk)+'</div></div><i class="ti ti-chevron-down chev"></i></div><div class="units"><div class="setall"><span>Set all:</span><span class="mini" onclick="setAll('+si+',true)"><i class="ti ti-circle-check"></i> Keep all</span><span class="mini" onclick="setAll('+si+',false)"><i class="ti ti-arrow-back-up"></i> Send all back</span></div>'+units+'</div></div>';
+    }).join('');
+  }
+  window.setKeep=function(si,ui,v){skus[si].units[ui].keep=v;if(v)skus[si].units[ui].cond='Good';renderDecide();};
+  window.setCond=function(si,ui,v){skus[si].units[ui].cond=v.indexOf('Lost')>=0?'Lost':(v.indexOf('Damaged')>=0?'Damaged':'Good');};
+  window.setAll=function(si,v){skus[si].units.forEach(function(u){u.keep=v;if(v)u.cond='Good';});renderDecide();};
+  window.toggleSku=function(si){open[si]=!open[si];renderDecide();};
+  window.pickReason=function(el){var c=document.querySelectorAll('#reasonChips .rchip');for(var i=0;i<c.length;i++)c[i].classList.remove('sel');el.classList.add('sel');};
+  window.pickMethod=function(m){document.getElementById('optDrop').classList.toggle('sel',m==='drop');document.getElementById('optPick').classList.toggle('sel',m==='pick');};
+  window.uploadPhoto=function(){document.getElementById('photoState').innerHTML='<span class="ok" style="font-size:12px;color:var(--txt-success)"><i class="ti ti-check"></i> packed.jpg</span>';};
+
+  function renderInvoice(){
+    var rows='',total=0;
+    skus.forEach(function(sk){var k=sk.units.filter(function(u){return u.keep;}).length;if(k>0){var amt=k*price[sk.m];total+=amt;rows+='<tr><td>'+sk.name+'</td><td>'+k+'</td><td class="r">$'+price[sk.m].toLocaleString()+'</td><td class="r">$'+amt.toLocaleString()+'</td></tr>';}});
+    if(!rows) rows='<tr><td colspan="4" style="color:var(--txt-tertiary);text-align:center;padding:18px;">No units kept — nothing to purchase.</td></tr>';
+    else rows+='<tr class="tot"><td>Total</td><td></td><td></td><td class="r">$'+total.toLocaleString()+'</td></tr>';
+    document.getElementById('invBody').innerHTML=rows;
+  }
+  function renderTrack(){
+    var n=retGood();document.getElementById('trackLead').textContent='Acme Corp · Order V2S-4821 · '+n+' units returning';
+    var states=[{t:'Label issued',s:'Jun 16, 9:02 AM',c:'done'},{t:"Dropped off — you're all set",s:'Jun 17, 2:41 PM · UPS Store, Palo Alto',c:'done'},{t:'In transit',s:'expected at warehouse Jun 20',c:'now'},{t:'Received & inspected',s:n+' serials expected',c:'pending'},{t:'Return complete — account cleared',s:'pending',c:'pending'}];
+    document.getElementById('trackList').innerHTML=states.map(function(k){return '<div class="tk '+k.c+'"><span class="td"></span><div class="tt">'+k.t+'</div><div class="ts">'+k.s+'</div></div>';}).join('');
+  }
+  function wireStars(){var st=document.querySelectorAll('#stars i');st.forEach(function(s){s.onclick=function(){var v=+s.dataset.v;st.forEach(function(x){x.classList.toggle('on',+x.dataset.v<=v);});document.getElementById('fbThanks').style.display='flex';};});}
+
+  function fillTicketSerials(){var sel=document.getElementById('tkSerial');var o='<option>Not specific to one unit</option>';skus.forEach(function(sk){sk.units.forEach(function(u){o+='<option>'+u.s+'</option>';});});sel.innerHTML=o;}
+  window.openTicket=function(){var d=document.getElementById('ticket');d.classList.add('show');document.getElementById('tkform').style.display='block';document.getElementById('tkConfirm').classList.remove('show');fillTicketSerials();d.scrollIntoView({behavior:'smooth',block:'nearest'});};
+  window.closeTicket=function(){document.getElementById('ticket').classList.remove('show');};
+  window.submitTicket=function(){document.getElementById('tkform').style.display='none';document.getElementById('tkConfirm').classList.add('show');};
+
+  window.go=function(s){
+    if(s<0||s>7)return;step=s;
+    var panels=document.querySelectorAll('.panel');for(var i=0;i<panels.length;i++)panels[i].classList.toggle('show',+panels[i].dataset.p===s);
+    var chips=document.querySelectorAll('.pchip');for(var j=0;j<chips.length;j++){var cs=+chips[j].dataset.s;chips[j].classList.toggle('active',cs===s);chips[j].classList.toggle('done',cs<s);}
+    document.getElementById('backBtn').style.visibility=s===0?'hidden':'visible';
+    var t=tally();var parts=[];if(t.keep)parts.push(t.keep+' keeping');if(t.send)parts.push(t.send+' sending back');
+    document.getElementById('footsum').textContent=(s>=1&&s<=2)?parts.join(' · '):'';
+    var nb=document.getElementById('nextBtn');
+    if(s===0){nb.style.visibility='hidden';}
+    else if(s===1){nb.style.visibility='visible';nb.innerHTML='Review &amp; pay <i class="ti ti-arrow-right"></i>';renderDecide();}
+    else if(s===2){nb.style.visibility='visible';nb.innerHTML='Set up return <i class="ti ti-arrow-right"></i>';renderInvoice();}
+    else if(s===6){nb.style.visibility='visible';nb.innerHTML='I\'ve dropped it off <i class="ti ti-arrow-right"></i>';document.getElementById('labelCount').textContent=retGood()+' units · return by Jun 30';}
+    else if(s===7){nb.style.visibility='hidden';}
+    else{nb.style.visibility='visible';nb.innerHTML='Continue <i class="ti ti-arrow-right"></i>';}
+    if(s===5){document.getElementById('invCount').textContent='('+retGood()+' units)';}
+    if(s===7){renderTrack();wireStars();}
+  };
+  window.next=function(){go(step+1);};
+  document.querySelectorAll('.pchip').forEach(function(c){c.addEventListener('click',function(){go(+c.dataset.s);});});
+})();
+</script>
+</body>
+</html>
